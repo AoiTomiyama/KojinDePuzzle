@@ -8,47 +8,60 @@ public class TitleMove : MonoBehaviour
 {
     [Header("ƒ^ƒCƒgƒ‹–¼")]
     [SerializeField]
-    string title = "Title";
-    float[] theta;
-    Text[] textArray;
-    float initPosY;
+    string _title = "Title";
+    float[] _theta;
+    Text[] _textArray;
+    float _initPosY;
     [SerializeField]
-    GameObject textPrefab;
+    GameObject _textPrefab;
+    [SerializeField]
+    Font _font;
 
+    [SerializeField]
+    float _speed = 1, _multiply = 1, _frequency = 1, _padding = -10;
     private void Start()
     {
-        var charArray = title.ToCharArray();
+        var charArray = _title.ToCharArray();
         float space = transform.position.x;
-        foreach (char c in charArray)
+        _textArray = new Text[charArray.Length];
+        for (int i = 0; i < charArray.Length; i++)
         {
-            var go = Instantiate(textPrefab, new Vector2(space, transform.position.y), Quaternion.identity, this.transform);
-            go.GetComponent<Text>().text = c.ToString();
-            space += 160;
+            var go = Instantiate(_textPrefab, this.transform);
+            _textArray[i] = go.GetComponent<Text>();
+            _textArray[i].text = charArray[i].ToString();
+            _textArray[i].rectTransform.sizeDelta = new Vector2(_textArray[i].preferredWidth, _textArray[i].preferredHeight);
+
+            if (_font != null)
+            _textArray[i].font = _font;
+
+            if (i > 0)
+            space += _textArray[i].rectTransform.sizeDelta.x / 2 + _textArray[i - 1].rectTransform.sizeDelta.x / 2 + _padding;
+
+            _textArray[i].rectTransform.position = new Vector2(space, transform.position.y);
         }
-        initPosY = transform.position.y;
-        textArray = FindObjectsOfType<Text>();
-        theta = new float[textArray.Length];
-        foreach (Text text in textArray)
+        _initPosY = transform.position.y;
+        _theta = new float[_textArray.Length];
+        foreach (Text text in _textArray)
         {
             text.AddComponent<TrailRenderer>();
         }
 
         var line = "";
-        for (int i = 0; i < theta.Length; i++)
+        for (int i = 0; i < _theta.Length; i++)
         {
-            theta[i] = textArray[i].transform.position.x / 200;
-            line += theta[i] + ",  ";
+            _theta[i] = _textArray[i].transform.position.x / 200;
+            line += _theta[i] + ",  ";
         }
         Debug.Log(line);
     }
-    private void Update()
+    private void FixedUpdate()
     {
         var line = "";
-        for (int i = 0; i < theta.Length; i++)
+        for (int i = 0; i < _theta.Length; i++)
         {
-            theta[i] += Time.deltaTime;
-            textArray[i].transform.position = new Vector2(textArray[i].transform.position.x, initPosY + 100 * Mathf.Sin(theta[i]));
-            line += theta[i] + ",  ";
+            _theta[i] += Time.deltaTime * _speed;
+            _textArray[i].rectTransform.position = new Vector2(_textArray[i].transform.position.x, _initPosY + 100 * _multiply * Mathf.Sin(_theta[i] * _frequency));
+            line += _theta[i] + ",  ";
         }
         Debug.Log(line);
     }
