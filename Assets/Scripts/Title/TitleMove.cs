@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class TitleMove : MonoBehaviour
 {
-    float _theta;
+    float _theta, _colorValue;
     Text[] _textArray;
 
     [Header("タイトル名")]
@@ -41,6 +41,11 @@ public class TitleMove : MonoBehaviour
     [SerializeField]
     Gradient _gradient;
 
+
+    [Header("テキスト色の変化速度")]
+    [SerializeField,Range(0.01f, 5)]
+    float _colorSpeed = 1;
+
     private void Start()
     {
         var charArray = _title.ToCharArray();
@@ -66,9 +71,11 @@ public class TitleMove : MonoBehaviour
     private void FixedUpdate()
     {
         _theta += Time.deltaTime * _waveSpeed;
+        _colorValue = Time.time;
         for (int i = 0; i <_textArray.Length; i++)
         {
             _textArray[i].rectTransform.position = new Vector2(_textArray[i].transform.position.x, transform.position.y + 100 * _waveAmplify * Mathf.Sin((_theta + (_textArray[i].rectTransform.position.x / 200)) * _waveFrequency));
+            _textArray[i].color = _gradient.Evaluate(((float)i / _textArray.Length + _colorValue * _colorSpeed) % 1);
         }
     }
 }

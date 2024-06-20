@@ -39,7 +39,7 @@ public class Generate : MonoBehaviour
         intervalTime = 0;
         combo = 0;
 
-        //5色のうち、４色を選択
+        //5色のうち、4色を選択
         float r = Random.Range(0, _objPrefab.Length);
         int n = 0;
         for (int i = 0; i < _prefabField.Length; i++)
