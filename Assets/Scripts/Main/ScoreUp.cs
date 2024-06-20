@@ -14,7 +14,7 @@ public class ScoreUp : MonoBehaviour
     void Update()
     {
         theta += Time.deltaTime;
-        transform.position = new Vector2(transform.position.x, transform.position.y + Mathf.Cos(3 * theta));
+        transform.position = new Vector2(transform.position.x, transform.position.y + 0.01f * Mathf.Cos(3 * theta));
         if (_enableScaling) transform.localScale += Vector3.one * 0.004f;
     }
 }

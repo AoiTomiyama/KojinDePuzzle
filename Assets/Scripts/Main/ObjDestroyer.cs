@@ -79,7 +79,7 @@ public class ObjDestroyer : MonoBehaviour
             var particleObject = ((Generate.combo / 3) < particleEmitters.Length) ? particleEmitters[(Generate.combo / 3)] : particleEmitters[3];
             Instantiate(particleObject, this.gameObject.transform.position, Quaternion.identity, GameObject.Find("Effect").transform);
 
-            Generate.intervalTime = 1.3f;
+            Generate.intervalTime = 2f;
             Generate.score += (Generate.combo > 0) ? 50 * Generate.combo * Generate.combo : 50;
 
             FindObjectOfType<Generate>()._objList.Remove(this.gameObject);

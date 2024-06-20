@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.TerrainTools;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class Generate : MonoBehaviour
@@ -13,16 +14,15 @@ public class Generate : MonoBehaviour
     GameObject[] _objPrefab = new GameObject[4];
 
     [SerializeField] 
-    GameObject _preview1, _preview2, _comboDisplayer;
+    GameObject _preview1, _preview2, _comboDisplayer, _scoreDisplayer;
 
     [SerializeField] 
-    Text _scoreText, _comboPrefab, _resultText, _maxComboText, _timerText, _CountDownText;
+    Text _scoreText, _comboPrefab, _countUpPrefab, _resultText, _maxComboText, _timerText, _CountDownText;
 
     [SerializeField]
     Image _circleParameter, _penaltyParameter;
 
     float _maxCombo = 0, _scoreMemorizer = 0, _initIdGenerate = 0, _penalty = 10, _penaltyInit;
-    ScoreDisplayer _scoreDisplayer;
     public static float intervalTime = 0,timer;
     public static int score = 0, combo = 0;
     public List<GameObject> _objList = new();
@@ -53,7 +53,6 @@ public class Generate : MonoBehaviour
 
         //コンポーネントの取得
         _detector = FindObjectOfType<GameoverDetector>();
-        _scoreDisplayer = FindObjectOfType<ScoreDisplayer>();
 
         //右の予測欄にあらかじめ生成
         _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
@@ -89,7 +88,10 @@ public class Generate : MonoBehaviour
         showCombo.text = combo + " Combo!";
 
         //増加分のスコアをシーン上に表示
-        _scoreDisplayer.DisplayScore(score - _scoreMemorizer);
+        Text text = Instantiate(_countUpPrefab, _scoreDisplayer.transform);
+        text.transform.position = _scoreDisplayer.transform.position;
+        text.text = "+" + (score - _scoreMemorizer).ToString();
+
         _scoreMemorizer = score;
 
         //制限時間をコンボ数に応じて回復させる
@@ -150,11 +152,11 @@ public class Generate : MonoBehaviour
             timer = 15;
         }
 
-        if (intervalTime > 0 && intervalTime < 1.3f)
+        if (intervalTime > 0 && intervalTime < 2f)
         {
             intervalTime -= Time.deltaTime;
         }
-        else if (intervalTime == 1.3f)
+        else if (intervalTime == 2f)
         {
             intervalTime -= Time.deltaTime;
             Combo();
