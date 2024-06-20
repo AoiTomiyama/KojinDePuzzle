@@ -5,15 +5,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     Image _img;
-    Color _color;
+    Text _text;
+    Color _imgColor, _textColor;
     IEnumerator _coroutine;
     void Start()
     {
         _img = GetComponent<Image>();
-        _color = _img.color;
+        _text = GetComponentInChildren<Text>();
+        _imgColor = _img.color;
+        _textColor = _text.color;
     }
 
     public void OnPointerEnter(PointerEventData p)
@@ -36,30 +39,37 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         _coroutine = AlphaIncrease();
         StartCoroutine(_coroutine);
     }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        OnPointerExit(eventData);
+    }
+
 
     private IEnumerator AlphaDecrease()
     {
-        while (_color.a >= 0.5)
+        while (_imgColor.a >= 0.5)
         {
             yield return null;
-            _color.a -= 0.05f;
+            _imgColor.a -= 0.05f;
         }
     }
 
     private IEnumerator AlphaIncrease()
     {
-        while (_color.a <= 1)
+        while (_imgColor.a <= 1)
         {
             yield return null;
-            _color.a += 0.05f;
+            _imgColor.a += 0.05f;
         }
     }
 
     private void Update()
     {
-        if (_img != null)
+        if (_img != null && _text != null)
         {
-            _img.color = _color;
+            _textColor.a = _imgColor.a;
+            _img.color = _imgColor;
+            _text.color = _textColor;
         }
     }
 }
