@@ -70,6 +70,13 @@ public class Generate : MonoBehaviour
 
         _objList.Add(_newObj);
     }
+    void Update()
+    {
+        UIAndTimeControl();
+        Interval();
+        SpawnNewBall();
+        ActivateDetectionToAllBall();
+    }
 
     /// <summary>
     /// コンボ時（盤面上でいずれかのオブジェクトが消滅した瞬間の1fのみ）に呼び出され、スコアの増加値・コンボ数の表示、値の記録などを行う。
@@ -118,13 +125,16 @@ public class Generate : MonoBehaviour
         _hasDetected = false;
     }
 
-    void Update()
+    /// <summary>
+    /// UIを制御する部分。赤ゲージのペナルティータイマー・緑ゲージのインターバルタイマーの表示と、制限時間の駆動・表示を行う（スコア・コンボの表示はCombo関数を参照。）
+    /// </summary>
+    void UIAndTimeControl()
     {
         //インターバルとペナルティータイマーを画面に円形ゲージとして表示
         _circleParameter.fillAmount = intervalTime / 0.7f;
         _circleParameter.gameObject.transform.parent.gameObject.SetActive(_circleParameter.fillAmount > 0);
 
-        if (intervalTime < 0 )_penalty -= Time.deltaTime;
+        if (intervalTime < 0) _penalty -= Time.deltaTime;
         _penaltyParameter.fillAmount = _penalty / _penaltyInit;
 
         //制限時間の制御・表示
@@ -145,19 +155,25 @@ public class Generate : MonoBehaviour
             _CountDownText.gameObject.SetActive(false);
         }
 
-
         //タイマーを強制的に15秒に（デバッグ用）
         if (Input.GetKeyDown(KeyCode.T))
         {
             timer = 15;
         }
+    }
 
+    /// <summary>
+    /// インターバルの制御を行う。
+    /// </summary>
+    void Interval()
+    {
         if (intervalTime > 0 && intervalTime < 2f)
         {
             intervalTime -= Time.deltaTime;
         }
         else if (intervalTime == 2f)
         {
+            //連鎖時に一度だけCombo関数を起動させる。
             intervalTime -= Time.deltaTime;
             Combo();
         }
@@ -165,15 +181,50 @@ public class Generate : MonoBehaviour
         {
             combo = 0;
         }
+    }
 
-        //インターバルが0かつ、ゲームオーバーになってないときに、Spaceキーが押されたときか、ペナルティータイマーが0になった時に、新しく球を出す関数を実行。
+    /// <summary>
+    /// 予測欄から一つ球を盤面上に移し、空いたスロットに新しく球を生成する。
+    /// </summary>
+    void SpawnNewBall()
+    {
+        //インターバルが0かつ、ゲームオーバーになってないときに、Spaceキーが押されたときか、ペナルティータイマーが0になった時に、新しく球を出す処理を実行。
         //Pキーはデバッグ用なのでビルド段階には無効にすること
-        if (Input.GetButtonDown("Jump") && intervalTime <= 0  && _detector._isGameOver == false || Input.GetKeyDown(KeyCode.P) || _penalty < 0)
+        if (Input.GetButtonDown("Jump") && intervalTime <= 0 && _detector._isGameOver == false || Input.GetKeyDown(KeyCode.P) || _penalty < 0)
         {
-            SpawnNewBall();
+            //インターバルの設定
+            intervalTime = 0.7f;
+            //ペナルティータイマーの設定
+            _penalty = _penaltyInit = 8 - score.ToString().Length;
+
+
+            foreach (GameObject o in _objList)
+            {
+                if (o.transform.position.x == _preview1.transform.position.x)
+                {
+                    o.transform.position = _preview2.transform.position;
+                }
+                else if (o.transform.position.x == _preview2.transform.position.x)
+                {
+                    o.transform.position = this.transform.position;
+                    o.GetComponent<Rigidbody2D>().velocity = Vector2.down * 10;
+                }
+            }
+            _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
+
+            _newObj.GetComponent<ObjDestroyer>()._initId = _initIdGenerate;
+            _initIdGenerate++;
+
+            _objList.Add(_newObj);
+            _hasDetected = false;
         }
+    }
 
-
+    /// <summary>
+    /// 盤面上のボールが安定している際に、それぞれのボールに付随する、隣接数に応じて消すかどうか判断する関数を実行させる。
+    /// </summary>
+    void ActivateDetectionToAllBall()
+    {
         if (_hasDetected == false)
         {
             //盤面上にあるすべての球が安定している時に、それぞれのボールでDestroyDetection関数を2回だけ呼び出す。
@@ -198,37 +249,5 @@ public class Generate : MonoBehaviour
                 _hasDetected = true;
             }
         }
-    }
-
-    /// <summary>
-    /// 予測欄から一つ球を盤面上に移し、空いたスロットに新しく球を生成する。
-    /// </summary>
-    void SpawnNewBall()
-    {
-        //インターバルの設定
-        intervalTime = 0.7f;
-        //ペナルティータイマーの設定
-        _penalty = _penaltyInit = 8 - score.ToString().Length;
-
-
-        foreach (GameObject o in _objList)
-        {
-            if (o.transform.position.x == _preview1.transform.position.x)
-            {
-                o.transform.position = _preview2.transform.position;
-            }
-            else if (o.transform.position.x == _preview2.transform.position.x)
-            {
-                o.transform.position = this.transform.position;
-                o.GetComponent<Rigidbody2D>().velocity = Vector2.down * 10;
-            }
-        }
-        _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
-
-        _newObj.GetComponent<ObjDestroyer>()._initId = _initIdGenerate;
-        _initIdGenerate++;
-
-        _objList.Add(_newObj);
-        _hasDetected = false;
     }
 }

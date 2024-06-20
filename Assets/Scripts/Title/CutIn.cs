@@ -5,19 +5,41 @@ using UnityEngine.SceneManagement;
 
 public class CutIn : MonoBehaviour
 {
+
+    [Header("シーン開始時に起動するか")]
+    [SerializeField]
+    bool _activateOnStart = false;
+
+    private void Start()
+    {
+        if (_activateOnStart)
+        StartCoroutine(StartSceneCutIn());
+    }
     public void OnButtonPressed()
     {
-        StartCoroutine(SceneMove());
+        FindObjectOfType<Canvas>().gameObject.SetActive(false);
+        StartCoroutine(SceneMove("Main"));
     }
-    public IEnumerator SceneMove()
+    public IEnumerator StartSceneCutIn()
     {
-        FindObjectOfType<Canvas>().enabled = false;
+        transform.position = Vector3.left * 3;
+        while (transform.position.x < 35)
+        {
+            transform.position += Vector3.right * 0.8f;
+            yield return null;
+        }
+    }
+
+    public IEnumerator SceneMove(string sceneName)
+    {
+        LoadingCircle._sceneNameToMove = sceneName;
+        transform.position = Vector3.right * 25;
         while (transform.position.x > 0)
         {
             transform.position += Vector3.left * 0.8f;
             yield return null;
         }
-        Debug.Log("Insert Scene Loader Here");
+        Debug.Log(sceneName);
         SceneManager.LoadScene(1);
     }
 }

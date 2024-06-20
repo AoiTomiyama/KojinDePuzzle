@@ -13,13 +13,17 @@ public class GameoverDetector : MonoBehaviour
 
     [NonSerialized]
     public bool _isGameOver = false;
-    int sceneIndex;
+    string _currentSceneName;
+    bool _isCoroutineStarted = false;
+
+    CutIn cutIn;
 
     private void Start()
     {
         Time.timeScale = 1;
-        sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        _currentSceneName = SceneManager.GetActiveScene().name;
         gameoverPanel.SetActive(false);
+        cutIn = FindObjectOfType<CutIn>();
     }
     private void Update()
     {
@@ -37,15 +41,19 @@ public class GameoverDetector : MonoBehaviour
             Gameover();
         }
 
-        if (_isGameOver == true)
+        if (_isGameOver == true && _isCoroutineStarted == false)
         {
             if (Input.GetButtonDown("Restart"))
             {
-                SceneManager.LoadScene(sceneIndex);
+                Debug.Log("Reload this scene");
+                StartCoroutine(cutIn.SceneMove(_currentSceneName));
+                _isCoroutineStarted = true;
             }
             else if (Input.GetButtonDown("GoTitle"))
             {
-                SceneManager.LoadScene(0);
+                Debug.Log("Move to title");
+                StartCoroutine(cutIn.SceneMove("Title"));
+                _isCoroutineStarted = true;
             }
         }
     }
