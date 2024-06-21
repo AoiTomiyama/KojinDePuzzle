@@ -1,15 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.TerrainTools;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Generate : MonoBehaviour
 {
     [SerializeField]
-    GameObject[] _prefabField;
+    GameObject[] _prefabField, _achievementPanel;
 
     GameObject[] _objPrefab = new GameObject[4];
 
@@ -25,11 +24,15 @@ public class Generate : MonoBehaviour
     float _maxCombo = 0, _scoreMemorizer = 0, _initIdGenerate = 0, _penalty = 10, _penaltyInit;
     public static float intervalTime = 0,timer;
     public static int score = 0, combo = 0;
+
+    [NonSerialized]
     public List<GameObject> _objList = new();
     GameObject _newObj;
     GameoverDetector _detector;
+    StartCount _startCount;
 
     bool _hasDetected = false;
+    bool[] _hasAchievementShowed = new bool[2];
 
     private void Start()
     {
@@ -38,6 +41,9 @@ public class Generate : MonoBehaviour
         score = 0;
         intervalTime = 0;
         combo = 0;
+
+        //タイマーをUIにセット
+        _timerText.text = "Time: " + Mathf.Round(timer);
 
         //5色のうち、4色を選択
         float r = Random.Range(0, _objPrefab.Length);
@@ -53,6 +59,7 @@ public class Generate : MonoBehaviour
 
         //コンポーネントの取得
         _detector = FindObjectOfType<GameoverDetector>();
+        _startCount = FindObjectOfType<StartCount>();
 
         //右の予測欄にあらかじめ生成
         _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
@@ -76,6 +83,7 @@ public class Generate : MonoBehaviour
         Interval();
         SpawnNewBall();
         ActivateDetectionToAllBall();
+        ShowAchievementByScore();
     }
 
     /// <summary>
@@ -138,8 +146,11 @@ public class Generate : MonoBehaviour
         _penaltyParameter.fillAmount = _penalty / _penaltyInit;
 
         //制限時間の制御・表示
-        timer -= Time.deltaTime;
-        _timerText.text = "Time: " + Mathf.Round(timer);
+        if (_startCount._timer < 0)
+        {
+            timer -= Time.deltaTime;
+            _timerText.text = "Time: " + Mathf.Round(timer);
+        }
 
         //制限時間が10秒以下の時に、カウントダウンを表示
         if (Mathf.Round(timer) <= 10 && Mathf.Round(timer) > 0)
@@ -184,13 +195,13 @@ public class Generate : MonoBehaviour
     }
 
     /// <summary>
-    /// 予測欄から一つ球を盤面上に移し、空いたスロットに新しく球を生成する。
+    /// 条件を満たしたときに、予測欄から一つ球を盤面上に移し、空いたスロットに新しく球を生成する。
     /// </summary>
     void SpawnNewBall()
     {
         //インターバルが0かつ、ゲームオーバーになってないときに、Spaceキーが押されたときか、ペナルティータイマーが0になった時に、新しく球を出す処理を実行。
         //Pキーはデバッグ用なのでビルド段階には無効にすること
-        if (Input.GetButtonDown("Jump") && intervalTime <= 0 && _detector._isGameOver == false || Input.GetKeyDown(KeyCode.P) || _penalty < 0)
+        if (_startCount._timer < 0 && Input.GetButtonDown("Jump") && intervalTime <= 0 && _detector._isGameOver == false || Input.GetKeyDown(KeyCode.P) || _penalty < 0)
         {
             //インターバルの設定
             intervalTime = 0.7f;
@@ -248,6 +259,20 @@ public class Generate : MonoBehaviour
                 //繰り返し検知できないようにbool値でロックをかける。
                 _hasDetected = true;
             }
+        }
+    }
+
+    void ShowAchievementByScore()
+    {
+        if (score >= 1000000 && _hasAchievementShowed[0] == false)
+        {
+            Instantiate(_achievementPanel[0], FindObjectOfType<Canvas>().transform);
+            _hasAchievementShowed[0] = true;
+        }
+        else if (combo >= 20 && _hasAchievementShowed[1] == false)
+        {
+            Instantiate(_achievementPanel[1], FindObjectOfType<Canvas>().transform);
+            _hasAchievementShowed[1] = true;
         }
     }
 }
