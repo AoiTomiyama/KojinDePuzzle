@@ -37,7 +37,7 @@ public class Generate : MonoBehaviour
     private void Start()
     {
         //static変数群をシーン開始時に初期化
-        timer = 400;
+        timer = 500;
         score = 0;
         intervalTime = 0;
         combo = 0;
@@ -264,7 +264,7 @@ public class Generate : MonoBehaviour
 
     void ShowAchievementByScore()
     {
-        if (score >= 1000000 && _hasAchievementShowed[0] == false)
+        if (score >= 1000000 && _hasAchievementShowed[0] == false || Input.GetKeyDown(KeyCode.K))
         {
             Instantiate(_achievementPanel[0], FindObjectOfType<Canvas>().transform);
             _hasAchievementShowed[0] = true;

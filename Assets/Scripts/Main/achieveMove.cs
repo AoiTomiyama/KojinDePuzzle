@@ -15,7 +15,7 @@ public class AchieveMove : MonoBehaviour
         while (Mathf.Cos(theta) > 0)
         {
             theta += Time.deltaTime;
-            transform.position = transform.position + Vector3.up * 0.027f * Mathf.Cos(theta);
+            transform.position = transform.position + Vector3.up * 0.023f * Mathf.Cos(theta);
             yield return null;
         }
         yield return new WaitForSeconds(1.5f);
