@@ -21,7 +21,7 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     [SerializeField]
     AudioClip _buttonSound;
-    
+
 
     void Start()
     {

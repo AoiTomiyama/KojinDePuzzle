@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 /// <summary>
 /// ƒƒCƒ“‰æ–Ê‚ÌÀ¿“I‚ÈGameManagerB

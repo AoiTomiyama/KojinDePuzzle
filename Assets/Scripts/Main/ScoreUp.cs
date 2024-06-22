@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// コンボ・スコアの表示をぬるっと動かす為のスクリプト
+/// </summary>
 public class ScoreUp : MonoBehaviour
 {
     float theta;
@@ -15,6 +16,9 @@ public class ScoreUp : MonoBehaviour
     {
         theta += Time.deltaTime;
         transform.position = new Vector2(transform.position.x, transform.position.y + 0.01f * Mathf.Cos(3 * theta));
-        if (_enableScaling) transform.localScale += Vector3.one * 0.004f;
+        if (_enableScaling)
+        {
+            transform.localScale += Vector3.one * 0.004f;
+        }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +9,7 @@ using UnityEngine.Rendering.Universal;
 /// </summary>
 public class ObjDestroyer : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField]
     GameObject[] particleEmitters;
 
     private List<GameObject> _objListInAdjacent = new();
