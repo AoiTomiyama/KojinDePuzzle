@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +16,7 @@ public class LoadingCircle : MonoBehaviour
         Invoke(nameof(LoadScene), 2);
     }
 
-    
+
     void Update()
     {
         _rotateZ += _rotateSpeed;

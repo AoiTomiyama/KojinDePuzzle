@@ -81,7 +81,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: i
+  m_Text: "i\u0332"
 --- !u!114 &5562247083062461412
 MonoBehaviour:
   m_ObjectHideFlags: 0

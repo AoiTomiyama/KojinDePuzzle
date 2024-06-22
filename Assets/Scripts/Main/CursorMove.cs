@@ -16,7 +16,7 @@ public class CursorMove : MonoBehaviour
     }
     void Update()
     {
-        if (_detector._isGameOver == false)
+        if (_detector.IsGameOver == false)
         {
             if (_interval > 0) _interval--;
             var h = Input.GetAxisRaw("Horizontal");

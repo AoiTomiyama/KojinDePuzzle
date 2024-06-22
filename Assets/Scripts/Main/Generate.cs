@@ -1,38 +1,64 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// メイン画面の実質的なGameManager。
+/// 球の生成、管理・スコアや制限時間などのステータスの管理、UIへの表示・実績の表示などを行う。
+/// </summary>
 public class Generate : MonoBehaviour
 {
     [SerializeField]
-    GameObject[] _prefabField, _achievementPanel;
+    GameObject[] _prefabField;
+    [SerializeField]
+    GameObject[] _achievementPanel;
 
     GameObject[] _objPrefab = new GameObject[4];
 
-    [SerializeField] 
-    GameObject _preview1, _preview2, _comboDisplayer, _scoreDisplayer;
-
-    [SerializeField] 
-    Text _scoreText, _comboPrefab, _countUpPrefab, _resultText, _maxComboText, _timerText, _CountDownText;
+    [SerializeField]
+    GameObject _preview1;
+    [SerializeField]
+    GameObject _preview2;
+    [SerializeField]
+    GameObject _comboDisplayer;
+    [SerializeField]
+    GameObject _scoreDisplayer;
 
     [SerializeField]
-    Image _circleParameter, _penaltyParameter;
+    Text _scoreText;
+    [SerializeField]
+    Text _comboPrefab;
+    [SerializeField]
+    Text _countUpPrefab;
+    [SerializeField]
+    Text _resultText;
+    [SerializeField]
+    Text _maxComboText;
+    [SerializeField]
+    Text _timerText;
+    [SerializeField]
+    Text _CountDownText;
+
+    [SerializeField]
+    Image _circleParameter;
+    [SerializeField]
+    Image _penaltyParameter;
 
     float _maxCombo = 0, _scoreMemorizer = 0, _initIdGenerate = 0, _penalty = 10, _penaltyInit;
-    public static float intervalTime = 0,timer;
+    public static float intervalTime = 0, timer;
     public static int score = 0, combo = 0;
 
-    [NonSerialized]
-    public List<GameObject> _objList = new();
+    private List<GameObject> _objListInMainScene = new();
     GameObject _newObj;
     GameoverDetector _detector;
     StartCount _startCount;
 
     bool _hasDetected = false;
     bool[] _hasAchievementShowed = new bool[2];
+
+    public List<GameObject> ObjListInMainScene { get => _objListInMainScene; }
 
     private void Start()
     {
@@ -64,18 +90,18 @@ public class Generate : MonoBehaviour
         //右の予測欄にあらかじめ生成
         _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
 
-        _newObj.GetComponent<ObjDestroyer>()._initId = _initIdGenerate;
+        _newObj.GetComponent<ObjDestroyer>().InitId = _initIdGenerate;
         _initIdGenerate++;
 
-        _objList.Add(_newObj);
+        ObjListInMainScene.Add(_newObj);
 
 
         _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview2.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
 
-        _newObj.GetComponent<ObjDestroyer>()._initId = _initIdGenerate;
+        _newObj.GetComponent<ObjDestroyer>().InitId = _initIdGenerate;
         _initIdGenerate++;
 
-        _objList.Add(_newObj);
+        ObjListInMainScene.Add(_newObj);
     }
     void Update()
     {
@@ -103,27 +129,23 @@ public class Generate : MonoBehaviour
         showCombo.text = combo + " Combo!";
 
         //増加分のスコアをシーン上に表示
+        //このCombo関数実行前にスコアは既に増加済なので、134行目は（増加後 - 増加前）で増加分を算出し、生成したテキストに代入している。
         Text text = Instantiate(_countUpPrefab, _scoreDisplayer.transform);
         text.transform.position = _scoreDisplayer.transform.position;
         text.text = "+" + (score - _scoreMemorizer).ToString();
 
+        //スコアがいくつ増加したかを検知するため、_scoreMemorizer変数に増加前のスコアを保存している。
         _scoreMemorizer = score;
 
         //制限時間をコンボ数に応じて回復させる
         timer += 3 * (combo / 2);
         Debug.Log("Time  +" + 3 * (combo / 2));
 
-        //スコアの値が必ず10桁になるように0を挿入
-        var scoreDigit = 10;
-        string line = "";
-        for (int i = 0; i < scoreDigit - score.ToString().Length; i++)
-        {
-            line += "0";
-        }
-        _scoreText.text = "Score: " + line + score;
+        //スコアの値が必ず10桁になるように0を挿入し、テキストに表示。
+        _scoreText.text = "Score: " + score.ToString("0000000000");
 
-        //最大コンボ数とスコアをリザルトに表示させ巣
-        _maxComboText.text = "<b> Max Combo: " + _maxCombo + " </b>";
+        //最大コンボ数とスコアをリザルトに表示させる。
+        _maxComboText.text = "<b> Max Combo: " + _maxCombo.ToString("0000000000") + " </b>";
         _resultText.text = "<b> Score: " + score + " </b>";
 
         //ペナルティータイマーの設定
@@ -142,7 +164,8 @@ public class Generate : MonoBehaviour
         _circleParameter.fillAmount = intervalTime / 0.7f;
         _circleParameter.gameObject.transform.parent.gameObject.SetActive(_circleParameter.fillAmount > 0);
 
-        if (intervalTime < 0) _penalty -= Time.deltaTime;
+        if (intervalTime < 0) _penalty -= Time.deltaTime;   
+        
         _penaltyParameter.fillAmount = _penalty / _penaltyInit;
 
         //制限時間の制御・表示
@@ -167,10 +190,10 @@ public class Generate : MonoBehaviour
         }
 
         //タイマーを強制的に15秒に（デバッグ用）
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            timer = 15;
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    timer = 15;
+        //}
     }
 
     /// <summary>
@@ -201,7 +224,7 @@ public class Generate : MonoBehaviour
     {
         //インターバルが0かつ、ゲームオーバーになってないときに、Spaceキーが押されたときか、ペナルティータイマーが0になった時に、新しく球を出す処理を実行。
         //Pキーはデバッグ用なのでビルド段階には無効にすること
-        if (_startCount._timer < 0 && Input.GetButtonDown("Jump") && intervalTime <= 0 && _detector._isGameOver == false || Input.GetKeyDown(KeyCode.P) || _penalty < 0)
+        if (_startCount._timer < 0 && Input.GetButtonDown("Jump") && intervalTime <= 0 && _detector.IsGameOver == false /*|| Input.GetKeyDown(KeyCode.P)*/ || _penalty < 0)
         {
             //インターバルの設定
             intervalTime = 0.7f;
@@ -209,7 +232,7 @@ public class Generate : MonoBehaviour
             _penalty = _penaltyInit = 8 - score.ToString().Length;
 
 
-            foreach (GameObject o in _objList)
+            foreach (GameObject o in ObjListInMainScene)
             {
                 if (o.transform.position.x == _preview1.transform.position.x)
                 {
@@ -223,10 +246,10 @@ public class Generate : MonoBehaviour
             }
             _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
 
-            _newObj.GetComponent<ObjDestroyer>()._initId = _initIdGenerate;
+            _newObj.GetComponent<ObjDestroyer>().InitId = _initIdGenerate;
             _initIdGenerate++;
 
-            _objList.Add(_newObj);
+            ObjListInMainScene.Add(_newObj);
             _hasDetected = false;
         }
     }
@@ -240,19 +263,19 @@ public class Generate : MonoBehaviour
         {
             //盤面上にあるすべての球が安定している時に、それぞれのボールでDestroyDetection関数を2回だけ呼び出す。
             float TotalMagnitude = 0;
-            foreach (var s in _objList)
+            foreach (var s in ObjListInMainScene)
             {
                 TotalMagnitude += s.GetComponent<Rigidbody2D>().velocity.magnitude;
             }
 
-            if (intervalTime < 0.4f && TotalMagnitude < 0.1f && _detector._isGameOver == false)
+            if (intervalTime < 0.4f && TotalMagnitude < 0.1f && _detector.IsGameOver == false)
             {
                 //foreachでDestroyDetection関数を呼び出す部分が2回あるのは、隣接数に応じて消すかどうかの一次検知と、隣接している同色のオブジェクトが消える際、自身も消える二次検知の両方が必要だから。
-                foreach (var s in _objList)
+                foreach (var s in ObjListInMainScene)
                 {
                     s.GetComponent<ObjDestroyer>().DestroyDetection();
                 }
-                foreach (var s in _objList)
+                foreach (var s in ObjListInMainScene)
                 {
                     s.GetComponent<ObjDestroyer>().DestroyDetection();
                 }
@@ -261,10 +284,12 @@ public class Generate : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// スコアとコンボ数に応じて実績を表示する。
+    /// </summary>
     void ShowAchievementByScore()
     {
-        if (score >= 1000000 && _hasAchievementShowed[0] == false || Input.GetKeyDown(KeyCode.K))
+        if (score >= 1000000 && _hasAchievementShowed[0] == false)
         {
             Instantiate(_achievementPanel[0], FindObjectOfType<Canvas>().transform);
             _hasAchievementShowed[0] = true;
