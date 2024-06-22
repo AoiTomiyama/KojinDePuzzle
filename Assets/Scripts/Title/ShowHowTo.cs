@@ -3,7 +3,6 @@ using UnityEngine;
 
 /// <summary>
 /// 操作説明のパネルを滑らかに表示・非表示するスクリプト
-/// 
 /// </summary>
 public class ShowHowTo : MonoBehaviour
 {

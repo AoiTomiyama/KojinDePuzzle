@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// メイン画面のグラデーション背景を生成するスクリプト。
+/// </summary>
 public class BackColor : MonoBehaviour
 {
     Material Material;

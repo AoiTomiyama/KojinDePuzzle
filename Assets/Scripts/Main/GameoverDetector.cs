@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,7 +15,7 @@ public class GameoverDetector : MonoBehaviour
 
     CutIn cutIn;
 
-    public bool IsGameOver { get => _isGameOver;}
+    public bool IsGameOver { get => _isGameOver; }
 
     private void Start()
     {

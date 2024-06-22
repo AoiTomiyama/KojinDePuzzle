@@ -11,7 +11,7 @@ public class StartCount : MonoBehaviour
     private float _startTime = 3;
     Text _startCountText;
 
-    public float StartTimer { get => _startTime;}
+    public float StartTimer { get => _startTime; }
 
     void Start()
     {

@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// カーソルの移動を行うスクリプト。
+/// </summary>
 public class CursorMove : MonoBehaviour
 {
     [SerializeField]
