@@ -3,12 +3,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// UIボタンが押されたとき・カーソルが合った/外れた時の動作。
+/// カーソルが合った/外れた時にはぬるっと半透明にする/半透明から戻す。
+/// 押されたときは音を鳴らす。
+/// 
+/// 補足: 通常のGameObjectにカーソルが合ってるかどうかはOnMouseEnterなどで可能だが、UI上では使えない。
+/// そこで、IPointerEnterHandler, IPointerExitHandler, IPointerDownHandlerを継承させると、
+/// UI上で使えるもの（OnPointerEnterなど）が扱える。
+/// </summary>
 public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     Image _img;
     Text _text;
     Color _imgColor, _textColor;
     IEnumerator _coroutine;
+
+    [SerializeField]
+    AudioClip _buttonSound;
+    
+
     void Start()
     {
         _img = GetComponent<Image>();
@@ -22,7 +36,9 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         Debug.Log("On Mouse Enter");
 
         if (_coroutine != null)
+        {
             StopCoroutine(_coroutine);
+        }
 
         _coroutine = AlphaDecrease();
         StartCoroutine(_coroutine);
@@ -32,14 +48,21 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         Debug.Log("On Mouse Exit");
 
         if (_coroutine != null)
+        {
             StopCoroutine(_coroutine);
+        }
 
         _coroutine = AlphaIncrease();
         StartCoroutine(_coroutine);
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        _imgColor.a = _textColor.a = 1;
+        //押されてすぐボタンが消えるとOnPointerExitの処理がされないままになってしまうので、無理やり実行させている。
+        OnPointerExit(eventData);
+        if (_buttonSound != null)
+        {
+            GameObject.Find("SEmanager").GetComponent<AudioSource>().PlayOneShot(_buttonSound);
+        }
     }
 
 

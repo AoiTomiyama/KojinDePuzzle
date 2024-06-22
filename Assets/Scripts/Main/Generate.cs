@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,9 +45,16 @@ public class Generate : MonoBehaviour
     [SerializeField]
     Image _penaltyParameter;
 
-    float _maxCombo = 0, _scoreMemorizer = 0, _initIdGenerate = 0, _penalty = 10, _penaltyInit;
-    public static float intervalTime = 0, timer;
-    public static int score = 0, combo = 0;
+    float _maxCombo;
+    float _scoreMemorizer;
+    float _initIdGenerate;
+    float _penalty = 10;
+    float _penaltyInit;
+
+    private static float _intervalTime;
+    private static float _timer;
+    private static int _score;
+    private static int _combo;
 
     private List<GameObject> _objListInMainScene = new();
     GameObject _newObj;
@@ -59,17 +65,21 @@ public class Generate : MonoBehaviour
     bool[] _hasAchievementShowed = new bool[2];
 
     public List<GameObject> ObjListInMainScene { get => _objListInMainScene; }
+    public static float IntervalTime { set => _intervalTime = value; }
+    public static float Timer { get => _timer; }
+    public static int Score { get => _score; set => _score = value; }
+    public static int Combo { get => _combo; }
 
     private void Start()
     {
         //static変数群をシーン開始時に初期化
-        timer = 500;
-        score = 0;
-        intervalTime = 0;
-        combo = 0;
+        _timer = 500;
+        Score = 0;
+        IntervalTime = 0;
+        _combo = 0;
 
         //タイマーをUIにセット
-        _timerText.text = "Time: " + Mathf.Round(timer);
+        _timerText.text = "Time: " + Mathf.Round(Timer);
 
         //5色のうち、4色を選択
         float r = Random.Range(0, _objPrefab.Length);
@@ -115,41 +125,41 @@ public class Generate : MonoBehaviour
     /// <summary>
     /// コンボ時（盤面上でいずれかのオブジェクトが消滅した瞬間の1fのみ）に呼び出され、スコアの増加値・コンボ数の表示、値の記録などを行う。
     /// </summary>
-    void Combo()
+    void ComboFunction()
     {
         //コンボ数を増やす
-        combo++;
+        _combo++;
 
         //最大コンボ数の記録
-        if (_maxCombo < combo) _maxCombo = combo;
+        if (_maxCombo < Combo) _maxCombo = Combo;
 
         //コンボ数をシーン上に表示
         Text showCombo = Instantiate(_comboPrefab, _comboDisplayer.transform);
         showCombo.transform.position = _comboDisplayer.transform.position;
-        showCombo.text = combo + " Combo!";
+        showCombo.text = Combo + " Combo!";
 
         //増加分のスコアをシーン上に表示
         //このCombo関数実行前にスコアは既に増加済なので、134行目は（増加後 - 増加前）で増加分を算出し、生成したテキストに代入している。
         Text text = Instantiate(_countUpPrefab, _scoreDisplayer.transform);
         text.transform.position = _scoreDisplayer.transform.position;
-        text.text = "+" + (score - _scoreMemorizer).ToString();
+        text.text = "+" + (Score - _scoreMemorizer).ToString();
 
         //スコアがいくつ増加したかを検知するため、_scoreMemorizer変数に増加前のスコアを保存している。
-        _scoreMemorizer = score;
+        _scoreMemorizer = Score;
 
         //制限時間をコンボ数に応じて回復させる
-        timer += 3 * (combo / 2);
-        Debug.Log("Time  +" + 3 * (combo / 2));
+        _timer += 3 * (Combo / 2);
+        Debug.Log("Time  +" + 3 * (Combo / 2));
 
         //スコアの値が必ず10桁になるように0を挿入し、テキストに表示。
-        _scoreText.text = "Score: " + score.ToString("0000000000");
+        _scoreText.text = "Score: " + Score.ToString("0000000000");
 
         //最大コンボ数とスコアをリザルトに表示させる。
         _maxComboText.text = "<b> Max Combo: " + _maxCombo.ToString("0000000000") + " </b>";
-        _resultText.text = "<b> Score: " + score + " </b>";
+        _resultText.text = "<b> Score: " + Score + " </b>";
 
         //ペナルティータイマーの設定
-        _penalty = _penaltyInit = 8 - score.ToString().Length;
+        _penalty = _penaltyInit = 8 - Score.ToString().Length;
 
         //再度検出できるようにする
         _hasDetected = false;
@@ -161,28 +171,28 @@ public class Generate : MonoBehaviour
     void UIAndTimeControl()
     {
         //インターバルとペナルティータイマーを画面に円形ゲージとして表示
-        _circleParameter.fillAmount = intervalTime / 0.7f;
+        _circleParameter.fillAmount = _intervalTime / 0.7f;
         _circleParameter.gameObject.transform.parent.gameObject.SetActive(_circleParameter.fillAmount > 0);
 
-        if (intervalTime < 0) _penalty -= Time.deltaTime;   
-        
+        if (_intervalTime < 0) _penalty -= Time.deltaTime;
+
         _penaltyParameter.fillAmount = _penalty / _penaltyInit;
 
         //制限時間の制御・表示
-        if (_startCount._timer < 0)
+        if (_startCount.StartTimer < 0)
         {
-            timer -= Time.deltaTime;
-            _timerText.text = "Time: " + Mathf.Round(timer);
+            _timer -= Time.deltaTime;
+            _timerText.text = "Time: " + Mathf.Round(Timer);
         }
 
         //制限時間が10秒以下の時に、カウントダウンを表示
-        if (Mathf.Round(timer) <= 10 && Mathf.Round(timer) > 0)
+        if (Mathf.Round(Timer) <= 10 && Mathf.Round(Timer) > 0)
         {
-            _CountDownText.text = Mathf.Round(timer).ToString();
+            _CountDownText.text = Mathf.Round(Timer).ToString();
             _CountDownText.gameObject.SetActive(true);
 
             //カウントダウンの表示が、タイマーが自然数の時に大きさが最大、それ以外の時は徐々に縮小するように
-            _CountDownText.gameObject.transform.localScale = Vector3.one * (1.2f + Mathf.Round(timer) - timer);
+            _CountDownText.gameObject.transform.localScale = Vector3.one * (1.2f + Mathf.Round(Timer) - Timer);
         }
         else
         {
@@ -201,19 +211,19 @@ public class Generate : MonoBehaviour
     /// </summary>
     void Interval()
     {
-        if (intervalTime > 0 && intervalTime < 2f)
+        if (_intervalTime > 0 && _intervalTime < 2f)
         {
-            intervalTime -= Time.deltaTime;
+            _intervalTime -= Time.deltaTime;
         }
-        else if (intervalTime == 2f)
+        else if (_intervalTime == 2f)
         {
             //連鎖時に一度だけCombo関数を起動させる。
-            intervalTime -= Time.deltaTime;
-            Combo();
+            _intervalTime -= Time.deltaTime;
+            ComboFunction();
         }
         else
         {
-            combo = 0;
+            _combo = 0;
         }
     }
 
@@ -224,12 +234,12 @@ public class Generate : MonoBehaviour
     {
         //インターバルが0かつ、ゲームオーバーになってないときに、Spaceキーが押されたときか、ペナルティータイマーが0になった時に、新しく球を出す処理を実行。
         //Pキーはデバッグ用なのでビルド段階には無効にすること
-        if (_startCount._timer < 0 && Input.GetButtonDown("Jump") && intervalTime <= 0 && _detector.IsGameOver == false /*|| Input.GetKeyDown(KeyCode.P)*/ || _penalty < 0)
+        if (_startCount.StartTimer < 0 && Input.GetButtonDown("Jump") && _intervalTime <= 0 && _detector.IsGameOver == false /*|| Input.GetKeyDown(KeyCode.P)*/ || _penalty < 0)
         {
             //インターバルの設定
-            intervalTime = 0.7f;
+            IntervalTime = 0.7f;
             //ペナルティータイマーの設定
-            _penalty = _penaltyInit = 8 - score.ToString().Length;
+            _penalty = _penaltyInit = 8 - Score.ToString().Length;
 
 
             foreach (GameObject o in ObjListInMainScene)
@@ -268,7 +278,7 @@ public class Generate : MonoBehaviour
                 TotalMagnitude += s.GetComponent<Rigidbody2D>().velocity.magnitude;
             }
 
-            if (intervalTime < 0.4f && TotalMagnitude < 0.1f && _detector.IsGameOver == false)
+            if (_intervalTime < 0.4f && TotalMagnitude < 0.1f && _detector.IsGameOver == false)
             {
                 //foreachでDestroyDetection関数を呼び出す部分が2回あるのは、隣接数に応じて消すかどうかの一次検知と、隣接している同色のオブジェクトが消える際、自身も消える二次検知の両方が必要だから。
                 foreach (var s in ObjListInMainScene)
@@ -289,12 +299,12 @@ public class Generate : MonoBehaviour
     /// </summary>
     void ShowAchievementByScore()
     {
-        if (score >= 1000000 && _hasAchievementShowed[0] == false)
+        if (Score >= 1000000 && _hasAchievementShowed[0] == false)
         {
             Instantiate(_achievementPanel[0], FindObjectOfType<Canvas>().transform);
             _hasAchievementShowed[0] = true;
         }
-        else if (combo >= 20 && _hasAchievementShowed[1] == false)
+        else if (Combo >= 20 && _hasAchievementShowed[1] == false)
         {
             Instantiate(_achievementPanel[1], FindObjectOfType<Canvas>().transform);
             _hasAchievementShowed[1] = true;
