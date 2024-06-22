@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// ゲームオーバーの条件を満たしているかを検知するスクリプト。
+/// </summary>
 public class GameoverDetector : MonoBehaviour
 {
     [SerializeField]
@@ -33,7 +36,7 @@ public class GameoverDetector : MonoBehaviour
         //    statsPanel.SetActive(true);
         //}
 
-        if (Mathf.Round(Generate.timer) <= 0 && IsGameOver == false)
+        if (Mathf.Round(Generate.Timer) <= 0 && IsGameOver == false)
         {
             Gameover();
         }
@@ -43,13 +46,13 @@ public class GameoverDetector : MonoBehaviour
             if (Input.GetButtonDown("Restart"))
             {
                 Debug.Log("Reload this scene");
-                StartCoroutine(cutIn.SceneMove(_currentSceneName));
+                StartCoroutine(cutIn.HideViewAndSceneMove(_currentSceneName));
                 _isCoroutineStarted = true;
             }
             else if (Input.GetButtonDown("GoTitle"))
             {
                 Debug.Log("Move to title");
-                StartCoroutine(cutIn.SceneMove("Title"));
+                StartCoroutine(cutIn.HideViewAndSceneMove("Title"));
                 _isCoroutineStarted = true;
             }
         }

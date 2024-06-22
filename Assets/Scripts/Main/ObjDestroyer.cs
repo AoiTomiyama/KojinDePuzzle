@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// ボールの隣接数・破壊処理・色の変化などを行うスクリプト。
-/// 
+/// 消滅時にスコアを加算させる機能も持つ。
 /// </summary>
 public class ObjDestroyer : MonoBehaviour
 {
@@ -79,11 +79,11 @@ public class ObjDestroyer : MonoBehaviour
             _sr.color = _light.color = Color.white;
             yield return new WaitForSeconds(seconds);
 
-            var particleObject = ((Generate.combo / 3) < particleEmitters.Length) ? particleEmitters[(Generate.combo / 3)] : particleEmitters[3];
+            var particleObject = ((Generate.Combo / 3) < particleEmitters.Length) ? particleEmitters[(Generate.Combo / 3)] : particleEmitters[3];
             Instantiate(particleObject, this.gameObject.transform.position, Quaternion.identity, GameObject.Find("Effect").transform);
 
-            Generate.intervalTime = 2f;
-            Generate.score += (Generate.combo > 0) ? 50 * Generate.combo * Generate.combo : 50;
+            Generate.IntervalTime = 2f;
+            Generate.Score += (Generate.Combo > 0) ? 50 * Generate.Combo * Generate.Combo : 50;
 
             FindObjectOfType<Generate>().ObjListInMainScene.Remove(this.gameObject);
             Destroy(this.gameObject);
