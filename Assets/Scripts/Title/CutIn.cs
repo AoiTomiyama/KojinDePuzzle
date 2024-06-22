@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +12,7 @@ public class CutIn : MonoBehaviour
     private void Start()
     {
         if (_activateOnStart)
-        StartCoroutine(StartSceneCutIn());
+            StartCoroutine(StartSceneCutIn());
     }
     public void OnButtonPressed()
     {

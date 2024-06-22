@@ -7,12 +7,13 @@ public class GameoverDetector : MonoBehaviour
     [SerializeField]
     GameObject gameoverPanel, statsPanel;
 
-    [NonSerialized]
-    public bool _isGameOver = false;
+    private bool _isGameOver = false;
     string _currentSceneName;
     bool _isCoroutineStarted = false;
 
     CutIn cutIn;
+
+    public bool IsGameOver { get => _isGameOver;}
 
     private void Start()
     {
@@ -24,20 +25,20 @@ public class GameoverDetector : MonoBehaviour
     private void Update()
     {
         //Lキーで強制的にゲームオーバー状態を解除（デバッグ用）（ビルド時には消すこと）
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            _isGameOver = false;
-            Time.timeScale = 1;
-            gameoverPanel.SetActive(false);
-            statsPanel.SetActive(true);
-        }
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    _isGameOver = false;
+        //    Time.timeScale = 1;
+        //    gameoverPanel.SetActive(false);
+        //    statsPanel.SetActive(true);
+        //}
 
-        if (Mathf.Round(Generate.timer) <= 0 && _isGameOver == false)
+        if (Mathf.Round(Generate.timer) <= 0 && IsGameOver == false)
         {
             Gameover();
         }
 
-        if (_isGameOver == true && _isCoroutineStarted == false)
+        if (IsGameOver == true && _isCoroutineStarted == false)
         {
             if (Input.GetButtonDown("Restart"))
             {
@@ -55,7 +56,7 @@ public class GameoverDetector : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.name.Contains("Ball") && _isGameOver == false)
+        if (collision.gameObject.name.Contains("Ball") && IsGameOver == false)
         {
             Gameover();
         }

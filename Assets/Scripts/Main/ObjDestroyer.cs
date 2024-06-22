@@ -1,24 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 
+/// <summary>
+/// ボールの隣接数・破壊処理・色の変化などを行うスクリプト。
+/// 
+/// </summary>
 public class ObjDestroyer : MonoBehaviour
 {
-    [NonSerialized]
-    public List<GameObject> _objList = new();
+    [SerializeField] 
+    GameObject[] particleEmitters;
 
+    private List<GameObject> _objListInAdjacent = new();
+    private float _initId = 0;
     SpriteRenderer _sr;
-    [SerializeField] GameObject[] particleEmitters;
-
-    [NonSerialized]
-    public float _initId = 0;
     Color _baseColor;
     Light2D _light;
     bool _isCoroutineStarted = false;
+
+    public float InitId { set => _initId = value; }
+    public List<GameObject> ObjListInAdjacent { get => _objListInAdjacent; set => _objListInAdjacent = value; }
 
     private void Start()
     {
@@ -27,28 +30,11 @@ public class ObjDestroyer : MonoBehaviour
         _light = _sr.GetComponent<Light2D>();
         _light.color = _baseColor;
     }
-
-    void ChangeBrightness()
-    {
-        float value = 70 * _objList.Count,
-                r = _baseColor.r * 255 + value,
-                g = _baseColor.g * 255 + value,
-                b = _baseColor.b * 255 + value;
-        _sr.color = new Color(r /255, g / 255, b / 255);
-
-        value = 35 * _objList.Count;
-            r = _baseColor.r * 255 + value;
-            g = _baseColor.g * 255 + value;
-            b = _baseColor.b * 255 + value;
-        _light.color = new Color(r / 255, g / 255, b / 255);
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision != null && _objList != null && this.gameObject.name == collision.gameObject.name && collision.isTrigger == false)
+        if (collision != null && ObjListInAdjacent != null && this.gameObject.name == collision.gameObject.name && collision.isTrigger == false)
         {
-            _objList.Add(collision.gameObject);
-
+            ObjListInAdjacent.Add(collision.gameObject);
             ChangeBrightness();
         }
     }
@@ -56,12 +42,29 @@ public class ObjDestroyer : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision != null && _objList != null && this.gameObject.name == collision.gameObject.name && collision.isTrigger == false)
+        if (collision != null && ObjListInAdjacent != null && this.gameObject.name == collision.gameObject.name && collision.isTrigger == false)
         {
-            _objList.Remove(collision.gameObject);
-
+            ObjListInAdjacent.Remove(collision.gameObject);
             ChangeBrightness();
         }
+    }
+
+    /// <summary>
+    /// 隣接数に応じて色の明るさ・光源の明るさを変える関数。
+    /// </summary>
+    void ChangeBrightness()
+    {
+        float value = 70 * ObjListInAdjacent.Count,
+                r = _baseColor.r * 255 + value,
+                g = _baseColor.g * 255 + value,
+                b = _baseColor.b * 255 + value;
+        _sr.color = new Color(r / 255, g / 255, b / 255);
+
+        value = 35 * ObjListInAdjacent.Count;
+        r = _baseColor.r * 255 + value;
+        g = _baseColor.g * 255 + value;
+        b = _baseColor.b * 255 + value;
+        _light.color = new Color(r / 255, g / 255, b / 255);
     }
 
     /// <summary>
@@ -82,7 +85,7 @@ public class ObjDestroyer : MonoBehaviour
             Generate.intervalTime = 2f;
             Generate.score += (Generate.combo > 0) ? 50 * Generate.combo * Generate.combo : 50;
 
-            FindObjectOfType<Generate>()._objList.Remove(this.gameObject);
+            FindObjectOfType<Generate>().ObjListInMainScene.Remove(this.gameObject);
             Destroy(this.gameObject);
         }
     }
@@ -92,15 +95,15 @@ public class ObjDestroyer : MonoBehaviour
     /// </summary>
     public void DestroyDetection()
     {
-        foreach (var obj in _objList)
+        foreach (var obj in ObjListInAdjacent)
         {
             var objScript = obj.GetComponent<ObjDestroyer>();
-            if (_objList.Count >= 3)
+            if (ObjListInAdjacent.Count >= 3)
             {
                 StartCoroutine(ChangeColorAndDestroy(0.2f));
                 break;
             }
-            else if (_objList.Count == 2 && objScript._objList.Count >= 2)
+            else if (ObjListInAdjacent.Count == 2 && objScript.ObjListInAdjacent.Count >= 2)
             {
                 //隣接数が2で、かつ、いずれかの隣接しているオブジェクトの隣接数が2以上のときは、やや複雑な処理が必要になる。
                 //例えば、3つが三角に並んでいる際、それぞれの隣接数は2となるが、隣接総数は3なので消えないよう回避したい。
@@ -108,24 +111,24 @@ public class ObjDestroyer : MonoBehaviour
 
                 List<float> initIdMemo = new();
                 //ここで、隣接しているオブジェクトに固有IDのリストを作成
-                foreach (var obj2 in _objList)
+                foreach (var obj2 in ObjListInAdjacent)
                 {
                     var objScript2 = obj2.GetComponent<ObjDestroyer>();
                     initIdMemo.Add(objScript2._initId);
                 }
 
-                foreach (var obj2 in _objList)
+                foreach (var obj2 in ObjListInAdjacent)
                 {
                     var objScript2 = obj2.GetComponent<ObjDestroyer>();
                     //隣接しているオブジェクト内に、隣接数が3以上（＝隣接総数は必ず4以上）のがあれば無条件でループを破棄
-                    if (objScript2._objList.Count > 2)
+                    if (objScript2.ObjListInAdjacent.Count > 2)
                     {
                         StartCoroutine(ChangeColorAndDestroy(0.2f));
                         break;
                     }
                     else
                     {
-                        foreach (var obj3 in objScript2._objList)
+                        foreach (var obj3 in objScript2.ObjListInAdjacent)
                         {
                             var objScript3 = obj3.GetComponent<ObjDestroyer>();
                             //固有IDのリストに含まれないIDを持つオブジェクト（つまり、これ自身＋リストの2つ以外のオブジェクト）が見つかったら無条件でループを破棄
@@ -144,11 +147,11 @@ public class ObjDestroyer : MonoBehaviour
                             }
                         }
                     }
-                    
+
                 }
                 //これで、オブジェクト同士が3つだけで循環状に隣接している状態だけを除外することができた。
             }
-            else if (_objList.Count == 1 && objScript._objList.Count >= 3)
+            else if (ObjListInAdjacent.Count == 1 && objScript.ObjListInAdjacent.Count >= 3)
             {
                 StartCoroutine(ChangeColorAndDestroy(0.2f));
                 break;

@@ -39,7 +39,7 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnPointerExit(eventData);
+        _imgColor.a = _textColor.a = 1;
     }
 
 
