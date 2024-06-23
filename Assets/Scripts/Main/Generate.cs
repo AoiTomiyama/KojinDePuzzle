@@ -43,6 +43,8 @@ public class Generate : MonoBehaviour
     Image _circleParameter;
     [SerializeField]
     Image _penaltyParameter;
+    [SerializeField]
+    AudioClip[] _se;
 
     float _maxCombo;
     float _scoreMemorizer;
@@ -59,6 +61,7 @@ public class Generate : MonoBehaviour
     GameObject _newObj;
     GameoverDetector _detector;
     StartCount _startCount;
+    AudioSource _aus;
 
     bool _hasDetected = false;
     bool[] _hasAchievementShowed = new bool[2];
@@ -95,6 +98,7 @@ public class Generate : MonoBehaviour
         //コンポーネントの取得
         _detector = FindObjectOfType<GameoverDetector>();
         _startCount = FindObjectOfType<StartCount>();
+        _aus = GameObject.Find("SE").GetComponent<AudioSource>();
 
         //右の予測欄にあらかじめ生成
         _newObj = Instantiate(_objPrefab[Random.Range(0, _objPrefab.Length)], _preview1.transform.position, Quaternion.identity, GameObject.Find("Ball").transform);
@@ -131,6 +135,10 @@ public class Generate : MonoBehaviour
 
         //最大コンボ数の記録
         if (_maxCombo < Combo) _maxCombo = Combo;
+
+        //コンボ数に応じてSEを鳴らす。
+        _aus.pitch = 1 + Mathf.Clamp((float)_combo - 1f, 0, 9) % 3f / 10f;
+        _aus.PlayOneShot(_se[Mathf.Clamp((_combo - 1) / 3, 0, _se.Length - 1)], 0.8f);
 
         //コンボ数をシーン上に表示
         Text showCombo = Instantiate(_comboPrefab, _comboDisplayer.transform);
