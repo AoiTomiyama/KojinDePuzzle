@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// UIボタンが押されたとき・カーソルが合った/外れた時の動作。
@@ -15,7 +16,7 @@ using UnityEngine.UI;
 public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     Image _img;
-    Text _text;
+    TextMeshProUGUI _textMeshPro;
     Color _imgColor, _textColor;
     IEnumerator _coroutine;
 
@@ -26,9 +27,9 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     void Start()
     {
         _img = GetComponent<Image>();
-        _text = GetComponentInChildren<Text>();
+        _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
         _imgColor = _img.color;
-        _textColor = _text.color;
+        _textColor = _textMeshPro.color;
     }
 
     public void OnPointerEnter(PointerEventData p)
@@ -86,11 +87,11 @@ public class Button : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     private void Update()
     {
-        if (_img != null && _text != null)
+        if (_img != null && _textMeshPro != null)
         {
             _textColor.a = _imgColor.a;
             _img.color = _imgColor;
-            _text.color = _textColor;
+            _textMeshPro.color = _textColor;
         }
     }
 }
