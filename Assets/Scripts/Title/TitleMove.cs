@@ -1,7 +1,5 @@
 using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// タイトルを入力に応じて生成し、波立たせたり色を滑らかに変化させるスクリプト。

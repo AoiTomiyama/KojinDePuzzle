@@ -1,8 +1,8 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
 
 /// <summary>
 /// UIボタンが押されたとき・カーソルが合った/外れた時の動作。
