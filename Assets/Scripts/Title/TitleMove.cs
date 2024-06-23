@@ -1,3 +1,5 @@
+using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +13,7 @@ public class TitleMove : MonoBehaviour
     /// <summary>Time.deltaTime * _waveSpeed を毎フレーム加算させている変数。これを三角関数の引数に用いる。</summary>
     float _theta;
     /// <summary>画面上に出すテキスト群を保管・管理する配列。</summary>
-    Text[] _textArray;
+    TextMeshProUGUI[] _textArray;
 
     //以下はヘッダー通りの機能なので、summaryは省略。
     [Header("タイトル名")]
@@ -24,7 +26,7 @@ public class TitleMove : MonoBehaviour
 
     [Header("ここに使用するフォントをセット")]
     [SerializeField]
-    Font _font;
+    TMP_FontAsset _fontAsset;
 
     [Header("波のスピード")]
     [SerializeField]
@@ -54,17 +56,17 @@ public class TitleMove : MonoBehaviour
     {
         var charArray = _title.ToCharArray();
         float space = transform.position.x;
-        _textArray = new Text[charArray.Length];
+        _textArray = new TextMeshProUGUI[charArray.Length];
         for (int i = 0; i < charArray.Length; i++)
         {
             var go = Instantiate(_textPrefab, this.transform);
-            _textArray[i] = go.GetComponent<Text>();
+            _textArray[i] = go.GetComponent<TextMeshProUGUI>();
             _textArray[i].text = charArray[i].ToString();
             _textArray[i].rectTransform.sizeDelta = new Vector2(_textArray[i].preferredWidth, _textArray[i].preferredHeight);
             _textArray[i].color = _gradient.Evaluate((float)i / charArray.Length);
 
-            if (_font != null)
-                _textArray[i].font = _font;
+            if (_fontAsset != null)
+                _textArray[i].font = _fontAsset;
 
             if (i > 0)
                 space += _textArray[i].rectTransform.sizeDelta.x / 2 + _textArray[i - 1].rectTransform.sizeDelta.x / 2 + _textPadding;

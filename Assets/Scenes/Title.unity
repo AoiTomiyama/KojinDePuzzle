@@ -561,7 +561,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 202.08427, y: 118.675354}
+  m_AnchoredPosition: {x: 137.3, y: 62.1}
   m_SizeDelta: {x: 223.6505, y: 74.1508}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!61 &536987015
@@ -1105,7 +1105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1339390736
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1214,12 +1214,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _title: Drop & Chain
-  _textPrefab: {fileID: 8419922323562805269, guid: e49fda91559a50044832dee467408610, type: 3}
-  _font: {fileID: 12800000, guid: f730b48c01a9c3049bcec9b8ea14e81f, type: 3}
+  _textPrefab: {fileID: 491361358110764086, guid: 72ab323c3fb5fb6449f09e8cb9c18d98, type: 3}
+  _fontAsset: {fileID: 11400000, guid: 060e670860b4d324f92d30a641cdb35e, type: 2}
   _waveSpeed: 2
   _waveAmplify: 0.5
   _waveFrequency: 1
-  _textPadding: 10
+  _textPadding: 30
   _gradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.65, b: 0.65, a: 1}
@@ -1328,7 +1328,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
