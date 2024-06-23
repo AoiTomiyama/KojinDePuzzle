@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// メイン画面の実質的なGameManager。
@@ -25,17 +26,17 @@ public class Generate : MonoBehaviour
     GameObject _scoreDisplayer;
 
     [SerializeField]
-    Text _scoreText;
+    TextMeshProUGUI _scoreText;
     [SerializeField]
-    Text _comboPrefab;
+    TextMeshProUGUI _comboPrefab;
     [SerializeField]
-    Text _countUpPrefab;
+    TextMeshProUGUI _countUpPrefab;
     [SerializeField]
-    Text _resultText;
+    TextMeshProUGUI _resultText;
     [SerializeField]
-    Text _maxComboText;
+    TextMeshProUGUI _maxComboText;
     [SerializeField]
-    Text _timerText;
+    TextMeshProUGUI _timerText;
     [SerializeField]
     Text _CountDownText;
 
@@ -141,13 +142,13 @@ public class Generate : MonoBehaviour
         _aus.PlayOneShot(_se[Mathf.Clamp((_combo - 1) / 3, 0, _se.Length - 1)], 0.8f);
 
         //コンボ数をシーン上に表示
-        Text showCombo = Instantiate(_comboPrefab, _comboDisplayer.transform);
+        TextMeshProUGUI showCombo = Instantiate(_comboPrefab, _comboDisplayer.transform);
         showCombo.transform.position = _comboDisplayer.transform.position;
         showCombo.text = Combo + " Combo!";
 
         //増加分のスコアをシーン上に表示
         //このCombo関数実行前にスコアは既に増加済なので、134行目は（増加後 - 増加前）で増加分を算出し、生成したテキストに代入している。
-        Text text = Instantiate(_countUpPrefab, _scoreDisplayer.transform);
+        TextMeshProUGUI text = Instantiate(_countUpPrefab, _scoreDisplayer.transform);
         text.transform.position = _scoreDisplayer.transform.position;
         text.text = "+" + (Score - _scoreMemorizer).ToString();
 
@@ -162,8 +163,8 @@ public class Generate : MonoBehaviour
         _scoreText.text = "Score: " + Score.ToString("0000000000");
 
         //最大コンボ数とスコアをリザルトに表示させる。
-        _maxComboText.text = "<b> Max Combo: " + _maxCombo.ToString("0000000000") + " </b>";
-        _resultText.text = "<b> Score: " + Score + " </b>";
+        _maxComboText.text = "<b> Max Combo: " + _maxCombo + " </b>";
+        _resultText.text = "<b> Score: " + Score.ToString("0000000000") + " </b>";
 
         //ペナルティータイマーの設定
         _penalty = _penaltyInit = 8 - Score.ToString().Length;
