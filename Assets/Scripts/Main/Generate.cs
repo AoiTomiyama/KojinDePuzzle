@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 /// <summary>
 /// メイン画面の実質的なGameManager。
@@ -50,6 +50,8 @@ public class Generate : MonoBehaviour
     AudioClip _dropSE;
     [SerializeField]
     AudioClip _comboGeneralSE;
+    [SerializeField]
+    AudioClip _achievementCompleteSE;
 
     float _maxCombo;
     float _scoreMemorizer;
@@ -184,7 +186,7 @@ public class Generate : MonoBehaviour
     void UIAndTimeControl()
     {
         //インターバルとペナルティータイマーを画面に円形ゲージとして表示
-        _circleParameter.fillAmount = _intervalTime / 0.7f;
+        _circleParameter.fillAmount = _intervalTime / 1.1f;
         _circleParameter.gameObject.transform.parent.gameObject.SetActive(_circleParameter.fillAmount > 0);
 
         if (_intervalTime < 0) _penalty -= Time.deltaTime;
@@ -250,7 +252,7 @@ public class Generate : MonoBehaviour
         if (_startCount.StartTimer < 0 && Input.GetButtonDown("Jump") && _intervalTime <= 0 && _detector.IsGameOver == false /*|| Input.GetKeyDown(KeyCode.P)*/ || _penalty < 0)
         {
             //インターバルの設定
-            IntervalTime = 0.7f;
+            IntervalTime = 1.1f;
             //ペナルティータイマーの設定
             _penalty = _penaltyInit = 8 - Score.ToString().Length;
             //生成時の効果音を鳴らす。
@@ -318,14 +320,18 @@ public class Generate : MonoBehaviour
     /// </summary>
     void ShowAchievementByScore()
     {
-        if (Score >= 1000000 && _hasAchievementShowed[0] == false || Input.GetKeyDown(KeyCode.K))
+        if (Score >= 1000000 && _hasAchievementShowed[0] == false)
         {
-            Instantiate(_achievementPanel[0], FindObjectOfType<Canvas>().transform);
+            GameObject achieveDisplayer = GameObject.Find("AchieveDisplayer");
+            Instantiate(_achievementPanel[0], achieveDisplayer.transform.position, Quaternion.identity, FindObjectOfType<Canvas>().transform);
+            _aus.PlayOneShot(_achievementCompleteSE);
             _hasAchievementShowed[0] = true;
         }
-        else if (Combo >= 20 && _hasAchievementShowed[1] == false || Input.GetKeyDown(KeyCode.L))
+        else if (Combo >= 20 && _hasAchievementShowed[1] == false)
         {
-            Instantiate(_achievementPanel[1], FindObjectOfType<Canvas>().transform);
+            GameObject achieveDisplayer = GameObject.Find("AchieveDisplayer");
+            Instantiate(_achievementPanel[1], achieveDisplayer.transform.position, Quaternion.identity, FindObjectOfType<Canvas>().transform);
+            _aus.PlayOneShot(_achievementCompleteSE);
             _hasAchievementShowed[1] = true;
         }
     }

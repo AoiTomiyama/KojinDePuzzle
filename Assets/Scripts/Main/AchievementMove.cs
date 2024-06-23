@@ -13,9 +13,12 @@ using UnityEngine;
 public class AchievementMove : MonoBehaviour
 {
     float _theta;
-    /// <summary>表示するときの高さ。 </summary>
+
+    [Header("表示するときの高さ。 ")]
+    [SerializeField]
     const float _showHeight = 0.023f;
-    /// <summary>表示した後の隠すスピード。 </summary>
+    [Header("表示した後の隠すスピード。 ")]
+    [SerializeField]
     const float _hideSpeed = 0.035f;
     private void Start()
     {
@@ -31,14 +34,14 @@ public class AchievementMove : MonoBehaviour
         while (Mathf.Cos(_theta) > 0)
         {
             _theta += Time.deltaTime;
-            transform.position = transform.position + _showHeight * Mathf.Cos(_theta) * Vector3.up;
+            transform.position += _showHeight * Mathf.Cos(_theta) * Vector3.up;
             yield return null;
         }
         yield return new WaitForSeconds(1.5f);
         while (Mathf.Cos(_theta) < 0)
         {
             _theta += Time.deltaTime;
-            transform.position = transform.position + _hideSpeed * Mathf.Cos(_theta) * Vector3.up;
+            transform.position += _hideSpeed * Mathf.Cos(_theta) * Vector3.up;
             yield return null;
         }
         Destroy(gameObject);
