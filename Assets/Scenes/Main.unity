@@ -8206,11 +8206,13 @@ MonoBehaviour:
   _CountDownText: {fileID: 1997804566}
   _circleParameter: {fileID: 459651234}
   _penaltyParameter: {fileID: 1542810143}
-  _se:
+  _comboSE:
   - {fileID: 8300000, guid: 8719215ff3950254eb9ff133cf3253db, type: 3}
   - {fileID: 8300000, guid: 7707fedf49943e442aa84df152cfa949, type: 3}
   - {fileID: 8300000, guid: cf4799646023cd0489a7f59134baa2ff, type: 3}
   - {fileID: 8300000, guid: e20437aa5d7190e4d9c7f3b9fb7ae0d2, type: 3}
+  _dropSE: {fileID: 8300000, guid: 778437991346ea04d9e4b743ad274edd, type: 3}
+  _comboGeneralSE: {fileID: 8300000, guid: 1e93c8f8009256741841bf4a0144f2bc, type: 3}
 --- !u!4 &1522976675
 Transform:
   m_ObjectHideFlags: 0

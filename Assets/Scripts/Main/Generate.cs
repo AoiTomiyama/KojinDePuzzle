@@ -45,7 +45,11 @@ public class Generate : MonoBehaviour
     [SerializeField]
     Image _penaltyParameter;
     [SerializeField]
-    AudioClip[] _se;
+    AudioClip[] _comboSE;
+    [SerializeField]
+    AudioClip _dropSE;
+    [SerializeField]
+    AudioClip _comboGeneralSE;
 
     float _maxCombo;
     float _scoreMemorizer;
@@ -139,7 +143,8 @@ public class Generate : MonoBehaviour
 
         //コンボ数に応じてSEを鳴らす。
         _aus.pitch = 1 + Mathf.Clamp((float)_combo - 1f, 0, 9) % 3f / 10f;
-        _aus.PlayOneShot(_se[Mathf.Clamp((_combo - 1) / 3, 0, _se.Length - 1)], 0.8f);
+        _aus.PlayOneShot(_comboSE[Mathf.Clamp((_combo - 1) / 3, 0, _comboSE.Length - 1)], 0.8f);
+        _aus.PlayOneShot(_comboGeneralSE, 0.8f);
 
         //コンボ数をシーン上に表示
         TextMeshProUGUI showCombo = Instantiate(_comboPrefab, _comboDisplayer.transform);
@@ -248,6 +253,8 @@ public class Generate : MonoBehaviour
             IntervalTime = 0.7f;
             //ペナルティータイマーの設定
             _penalty = _penaltyInit = 8 - Score.ToString().Length;
+            //生成時の効果音を鳴らす。
+            _aus.PlayOneShot(_dropSE, 1);
 
 
             foreach (GameObject o in ObjListInMainScene)
@@ -307,12 +314,12 @@ public class Generate : MonoBehaviour
     /// </summary>
     void ShowAchievementByScore()
     {
-        if (Score >= 1000000 && _hasAchievementShowed[0] == false)
+        if (Score >= 1000000 && _hasAchievementShowed[0] == false || Input.GetKeyDown(KeyCode.K))
         {
             Instantiate(_achievementPanel[0], FindObjectOfType<Canvas>().transform);
             _hasAchievementShowed[0] = true;
         }
-        else if (Combo >= 20 && _hasAchievementShowed[1] == false)
+        else if (Combo >= 20 && _hasAchievementShowed[1] == false || Input.GetKeyDown(KeyCode.L))
         {
             Instantiate(_achievementPanel[1], FindObjectOfType<Canvas>().transform);
             _hasAchievementShowed[1] = true;
