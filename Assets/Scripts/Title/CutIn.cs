@@ -53,6 +53,7 @@ public class CutIn : MonoBehaviour
 
     public IEnumerator HideViewAndSceneMove(string sceneName)
     {
+        Debug.Log("Hide view");
         LoadingCircle.SceneNameToMove = sceneName;
         yield return new WaitForSeconds(0.5f);
         transform.position = new Vector2(_stopPosX, transform.position.y);
