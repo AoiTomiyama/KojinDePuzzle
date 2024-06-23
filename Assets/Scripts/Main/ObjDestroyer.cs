@@ -17,6 +17,7 @@ public class ObjDestroyer : MonoBehaviour
     SpriteRenderer _sr;
     Color _baseColor;
     Light2D _light;
+    AudioSource _aus;
     bool _isCoroutineStarted = false;
 
     public float InitId { set => _initId = value; }
@@ -28,12 +29,15 @@ public class ObjDestroyer : MonoBehaviour
         _baseColor = _sr.color;
         _light = _sr.GetComponent<Light2D>();
         _light.color = _baseColor;
+        _aus = GetComponent<AudioSource>();
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision != null && ObjListInAdjacent != null && this.gameObject.name == collision.gameObject.name && collision.isTrigger == false)
         {
             ObjListInAdjacent.Add(collision.gameObject);
+            _aus.Play();
             ChangeBrightness();
         }
     }

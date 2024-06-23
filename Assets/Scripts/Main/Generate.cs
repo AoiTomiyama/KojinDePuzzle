@@ -142,9 +142,9 @@ public class Generate : MonoBehaviour
         if (_maxCombo < Combo) _maxCombo = Combo;
 
         //コンボ数に応じてSEを鳴らす。
+        _aus.PlayOneShot(_comboGeneralSE, 0.8f);
         _aus.pitch = 1 + Mathf.Clamp((float)_combo - 1f, 0, 9) % 3f / 10f;
         _aus.PlayOneShot(_comboSE[Mathf.Clamp((_combo - 1) / 3, 0, _comboSE.Length - 1)], 0.8f);
-        _aus.PlayOneShot(_comboGeneralSE, 0.8f);
 
         //コンボ数をシーン上に表示
         TextMeshProUGUI showCombo = Instantiate(_comboPrefab, _comboDisplayer.transform);
@@ -254,6 +254,10 @@ public class Generate : MonoBehaviour
             //ペナルティータイマーの設定
             _penalty = _penaltyInit = 8 - Score.ToString().Length;
             //生成時の効果音を鳴らす。
+            if (_aus.pitch != 1)
+            {
+                _aus.pitch = 1;
+            }
             _aus.PlayOneShot(_dropSE, 1);
 
 
