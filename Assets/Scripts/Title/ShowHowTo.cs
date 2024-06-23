@@ -7,8 +7,8 @@ using UnityEngine;
 public class ShowHowTo : MonoBehaviour
 {
     //パネルの最大サイズが0なので、パネルが完全に見えなくなる値（ = 0より少ない）を可読性の為に定義しているだけ。
-    const int _minPanelSizeX = -2000;
-    const int _minPanelSizeY = -800;
+    const int _minPanelSizeX = -1000;
+    const int _minPanelSizeY = -400;
 
     /// <summary>開くとき・閉じるときのx方向の速度</summary>
     int _showSpeedX = 80;
