@@ -48,14 +48,13 @@ public class CutIn : MonoBehaviour
     }
 
     /// <summary>
-    /// 画面をシュッと隠すカットインを入れたのち、シーンを移動する。。
+    /// 画面をシュッと隠すカットインを入れたのち、シーンを移動する。
     /// </summary>
 
     public IEnumerator HideViewAndSceneMove(string sceneName)
     {
         Debug.Log("Hide view");
         LoadingCircle.SceneNameToMove = sceneName;
-        yield return new WaitForSeconds(0.5f);
         transform.position = new Vector2(_stopPosX, transform.position.y);
         while (transform.position.x > _startPosX)
         {
