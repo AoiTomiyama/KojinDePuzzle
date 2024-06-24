@@ -224,10 +224,10 @@ public class Generate : MonoBehaviour
         }
 
         //タイマーを強制的に15秒に（デバッグ用）
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            _timer = 15;
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    _timer = 15;
+        //}
     }
 
     /// <summary>
