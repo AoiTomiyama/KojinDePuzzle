@@ -572,7 +572,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 60.140827, y: 164.00145}
+  m_AnchoredPosition: {x: 60.140827, y: 138}
   m_SizeDelta: {x: 443.2365, y: 220.9936}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &403338780
@@ -1373,7 +1373,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -122.415825, y: -169.45325}
+  m_AnchoredPosition: {x: -180, y: -119}
   m_SizeDelta: {x: 473.1683, y: 183.7078}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &984162901
@@ -1404,7 +1404,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "W/D or \u2190/\u2192\u3067\u30AB\u30FC\u30BD\u30EB\u79FB\u52D5\nSpace\u30AD\u30FC\u3067\u30DC\u30FC\u30EB\u3092\u843D\u3068\u3059\n\u540C\u3058\u8272\u30924\u3064\u7E4B\u3052\u308B\u3068\u6D88\u3048\u308B\n\u30B3\u30F3\u30DC\u3092\u7E4B\u3052\u3066\u30B9\u30B3\u30A2\u3092\u7A3C\u3054\u3046\uFF01"
+  m_text: "W/D or \u2190/\u2192\u3067\u30AB\u30FC\u30BD\u30EB\u79FB\u52D5\nSpace\u30AD\u30FC\u3067\u30DC\u30FC\u30EB\u3092\u843D\u3068\u3059\n\u540C\u3058\u8272\u30924\u3064\u7E4B\u3052\u308B\u3068\u6D88\u3048\u308B\n\u30B3\u30F3\u30DC\u3092\u7E4B\u3052\u3066\u30B9\u30B3\u30A2\u3092\u7A3C\u3054\u3046\uFF01\n\u5236\u9650\u6642\u9593\u304C0\u306B\u306A\u308B\u304B\u753B\u9762\u304B\u3089\n\u306F\u307F\u51FA\u3057\u305F\u3089\u30B2\u30FC\u30E0\u30AA\u30FC\u30D0\u30FC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c7f33a750677e934192d3897b051c80f, type: 2}
   m_sharedMaterial: {fileID: 624100748732122658, guid: c7f33a750677e934192d3897b051c80f, type: 2}
@@ -1932,8 +1932,8 @@ Canvas:
   m_GameObject: {fileID: 1524024981}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_RenderMode: 0
+  m_Camera: {fileID: 2025427382}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

@@ -12,6 +12,7 @@ public class GameoverDetector : MonoBehaviour
     private bool _isGameOver = false;
     string _currentSceneName;
     bool _isCoroutineStarted = false;
+    AudioSource _aus;
 
     CutIn cutIn;
 
@@ -23,6 +24,7 @@ public class GameoverDetector : MonoBehaviour
         _currentSceneName = SceneManager.GetActiveScene().name;
         gameoverPanel.SetActive(false);
         cutIn = FindObjectOfType<CutIn>();
+        _aus = GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -38,6 +40,7 @@ public class GameoverDetector : MonoBehaviour
         if (Mathf.Round(Generate.Timer) <= 0 && IsGameOver == false)
         {
             Gameover();
+            _aus.Play();
         }
 
         if (IsGameOver == true && _isCoroutineStarted == false)

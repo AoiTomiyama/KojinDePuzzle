@@ -52,12 +52,15 @@ public class Generate : MonoBehaviour
     AudioClip _comboGeneralSE;
     [SerializeField]
     AudioClip _achievementCompleteSE;
+    [SerializeField]
+    AudioClip _countDownSE;
 
     float _maxCombo;
     float _scoreMemorizer;
     float _initIdGenerate;
     float _penalty = 10;
     float _penaltyInit;
+    int timerMemorizer;
 
     private static float _intervalTime;
     private static float _timer;
@@ -203,6 +206,12 @@ public class Generate : MonoBehaviour
         //制限時間が10秒以下の時に、カウントダウンを表示
         if (Mathf.Round(Timer) <= 10 && Mathf.Round(Timer) > 0)
         {
+            if (timerMemorizer != Mathf.RoundToInt(Timer))
+            {
+                _aus.PlayOneShot(_countDownSE);
+            }
+            timerMemorizer = Mathf.RoundToInt(Timer);
+
             _CountDownText.text = Mathf.Round(Timer).ToString();
             _CountDownText.gameObject.SetActive(true);
 
@@ -215,10 +224,10 @@ public class Generate : MonoBehaviour
         }
 
         //タイマーを強制的に15秒に（デバッグ用）
-        //if (Input.GetKeyDown(KeyCode.T))
-        //{
-        //    timer = 15;
-        //}
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            _timer = 15;
+        }
     }
 
     /// <summary>
