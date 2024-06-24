@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using unityroom.Api;
 
 /// <summary>
 /// ゲームオーバーの条件を満たしているかを検知するスクリプト。
@@ -72,6 +73,7 @@ public class GameoverDetector : MonoBehaviour
     void Gameover()
     {
         _aus.Play();
+        UnityroomApiClient.Instance.SendScore(1, (float)Generate.Score, ScoreboardWriteMode.HighScoreDesc);
         Time.timeScale = 0;
         _isGameOver = true;
         gameoverPanel.SetActive(true);
