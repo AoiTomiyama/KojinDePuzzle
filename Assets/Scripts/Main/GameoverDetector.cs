@@ -40,7 +40,6 @@ public class GameoverDetector : MonoBehaviour
         if (Mathf.Round(Generate.Timer) <= 0 && IsGameOver == false)
         {
             Gameover();
-            _aus.Play();
         }
 
         if (IsGameOver == true && _isCoroutineStarted == false)
@@ -72,6 +71,7 @@ public class GameoverDetector : MonoBehaviour
     /// </summary>
     void Gameover()
     {
+        _aus.Play();
         Time.timeScale = 0;
         _isGameOver = true;
         gameoverPanel.SetActive(true);
